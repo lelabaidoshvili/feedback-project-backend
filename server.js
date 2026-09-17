@@ -55,7 +55,18 @@ app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/feedback', feedbackRoutes);
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, (err) => {
+    // Express-ში ეს callback შეცდომის დროსაც გამოიძახება, ამიტომ ვამოწმებთ err-ს
+    if (err) return;
     console.log(`სერვერი გაეშვა მისამართზე: http://localhost:${PORT}`);
     console.log(`Swagger დოკუმენტაცია: http://localhost:${PORT}/api-docs`);
+});
+
+server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+        console.error(`პორტი ${PORT} უკვე დაკავებულია. გაათავისუფლეთ პორტი ან შეცვალეთ PORT .env ფაილში.`);
+    } else {
+        console.error('სერვერის გაშვების შეცდომა:', err);
+    }
+    process.exit(1);
 });
