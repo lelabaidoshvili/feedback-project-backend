@@ -178,6 +178,26 @@ router.post('/login', login);
  *         description: არ ხართ ავტორიზებული
  */
 router.get('/me', authenticate, getMe);
+
+/**
+ * @swagger
+ * /api/auth/logout:
+ *   post:
+ *     summary: Logout (Clears the httpOnly cookie)
+ *     tags: [Auth]
+ *     responses:
+ *       200:
+ *         description: Logged out successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *             example:
+ *               message: "Logged out successfully"
+ */
 router.post('/logout', logout);
 
 module.exports = router;
