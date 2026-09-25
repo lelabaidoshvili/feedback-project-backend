@@ -278,6 +278,12 @@ router.route('/:projectId/members')
  *               position:
  *                 type: string
  *                 description: თანამდებობა
+ *               email:
+ *                 type: string
+ *               firstName:
+ *                 type: string
+ *               lastName:
+ *                 type: string
  *     responses:
  *       200:
  *         description: მონაცემები განახლდა

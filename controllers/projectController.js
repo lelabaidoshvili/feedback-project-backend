@@ -157,7 +157,7 @@ const getMembers = (req, res) => {
 // 7. პროექტის წევრის რედაქტირება
 const editMember = (req, res) => {
     const { projectId, userId } = req.params;
-    const { role, position } = req.body;
+    const { role, position, email, firstName, lastName } = req.body;
     
     db.get('SELECT ownerId FROM projects WHERE id = ?', [projectId], (err, project) => {
         if (err) return res.status(500).json({ message: 'სერვერის შეცდომა' });
@@ -170,7 +170,19 @@ const editMember = (req, res) => {
             function(err) {
                 if (err) return res.status(500).json({ message: 'შეცდომა განახლებისას' });
                 if (this.changes === 0) return res.status(404).json({ message: 'წევრი არ მოიძებნა' });
-                res.status(200).json({ message: 'წევრის მონაცემები განახლდა' });
+                
+                if (email || firstName || lastName) {
+                    db.run(
+                        'UPDATE users SET email = COALESCE(?, email), firstName = COALESCE(?, firstName), lastName = COALESCE(?, lastName) WHERE id = ?',
+                        [email, firstName, lastName, userId],
+                        function(err2) {
+                            if (err2) return res.status(500).json({ message: 'შეცდომა მომხმარებლის განახლებისას' });
+                            res.status(200).json({ message: 'წევრის მონაცემები განახლდა' });
+                        }
+                    );
+                } else {
+                    res.status(200).json({ message: 'წევრის მონაცემები განახლდა' });
+                }
             }
         );
     });
